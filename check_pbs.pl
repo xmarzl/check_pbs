@@ -31,7 +31,7 @@ sub help() {
   print '-vm --vmid'."\n";
   print '-v  --verbose'."\n";
   print '--help'."\n";
-  print 'perl check_pbs.pl -n <node> [-s <storagename> default: "Proxmox-Backup-Server"] [-w <warning>] [-c <critical>] [-v]'."\n";
+  print 'perl check_pbs.pl -n <node> -vm <vmid> [-s <storagename>] [-w <warning>] [-c <critical>] [-v]'."\n";
   exit($error{'unknown'});
 }
 
@@ -66,7 +66,7 @@ sub unixtime_to_time($) {
   'c|critical' => \$backup_age_critical,
   'vm|vmid=s@' => \@proxmox_vmids,
   'v|verbose!' => \$verbose,
-  'help!' => sub { &help() }
+  'h|help!' => sub { &help() }
 );
 
 # --- Verbose GetOptions
@@ -159,9 +159,18 @@ for my $vmid(keys %proxmox_vmid_backups) {
   $output = $output.$vmid.' - '.$backup_time."\n";
 }
 
+for my $vmid(@proxmox_vmids) {
+  if(not grep (/^$vmid$/, keys %proxmox_vmid_backups) ) {
+    $count_critical++;
+    $output = $output.'Vmid "'.$vmid.'" not found.'."\n";
+  }
+}
+
 # --- icinga title & message
 print 'Critical: '.$count_critical.' - Warning: '.$count_warning.' - OK: '.$count_ok."\n";
 print $output;
+
+
 
 if($count_critical > 0) {
   exit($error{'critical'});
