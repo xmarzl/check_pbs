@@ -140,14 +140,20 @@ my $count_ok = 0;
 
 my $output = '';
 
+# -- check newest backup for each vm
 for my $vmid(keys %proxmox_vmid_backups) {
   &verbose('searching for the newest backup of vmid '.$vmid.'...');
+  
+  # -- sort array (highest unixtime = newest file) 
   my @vmid_last_backups = sort { $b->{ctime} <=> $a->{ctime} } @{$proxmox_vmid_backups{$vmid}};
+
+  # --- element 0 = newest
   my $backup = $vmid_last_backups[0];
   my $backup_unixtime = $$backup{ctime};
   my $backup_time = &unixtime_to_time($backup_unixtime);
   my $backup_age_in_seconds = (time - $backup_unixtime);
 
+  # --- check if older than critical- or warning-seconds
   if($backup_age_in_seconds > $backup_age_critical) {
     $count_critical++;
   }elsif($backup_age_in_seconds > $backup_age_warning) {
@@ -156,9 +162,12 @@ for my $vmid(keys %proxmox_vmid_backups) {
     $count_ok++;
   }
   &verbose('Newst backup for vmid "'.$vmid.'": '.$backup_time);
+
+  # --- append information to output
   $output = $output.$vmid.' - '.$backup_time."\n";
 }
 
+# -- error if a vm is not found
 for my $vmid(@proxmox_vmids) {
   if(not grep (/^$vmid$/, keys %proxmox_vmid_backups) ) {
     $count_critical++;
@@ -171,7 +180,7 @@ print 'Critical: '.$count_critical.' - Warning: '.$count_warning.' - OK: '.$coun
 print $output;
 
 
-
+# -- exit if error
 if($count_critical > 0) {
   exit($error{'critical'});
 }
