@@ -48,7 +48,14 @@ Critical: 0 - Warning: 0 - OK: 4
 100 - 2022-03-28 22:00:01
 verbose: End script - Everything fine!
 ```
-
+```
+perl check_pbs.pl -n pve01 -vm 100 -vm 101 -vm 102 -vm 444
+Critical: 3 - Warning: 0 - OK: 1
+100 - 2022-02-25 22:00:02
+101 - 2022-03-29 00:43:29
+102 - 2022-03-26 00:57:32
+Vmid "444" not found.
+```
 
 ## Installation:
 ```sh
