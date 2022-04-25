@@ -78,5 +78,5 @@ chmod 750 /usr/lib/nagios/plugins/check_files.pl
 
 Example:
 ```bash
-./check_pbs.pl -n <pve01> -vm 100 -vm 101 -vm 102 -vm 103 -s mystorage -w 86400 -c 172800
+./check_pbs.pl -n pve01 -vm 100 -vm 101 -vm 102 -vm 103 -s mystorage -w 86400 -c 172800
 ```
