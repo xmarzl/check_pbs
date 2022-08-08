@@ -42,7 +42,7 @@ sub verbose($) {
 
 sub pvesh($) {
   my $f_path = shift;
-  my $f_command = 'pvesh get '.$f_path.' --output-format json';
+  my $f_command = '/usr/bin/pvesh get '.$f_path.' --output-format json';
   my $f_response = `$f_command`;
   &verbose('pvesh response: '.$f_response);
   my $f_output = decode_json($f_response);
