@@ -63,6 +63,11 @@ cd /usr/lib/nagios/plugins
 wget https://raw.githubusercontent.com/xmarzl/check_pbs/main/check_pbs.pl
 chmod 750 /usr/lib/nagios/plugins/check_files.pl
 ```
+Hinzufügen an letzter Stelle der sudoers file:
+```vi
+visudo
+nagios ALL=(root) NOPASSWD: /usr/bin/pvesh
+```
 Installation des Moduls "JSON"  
 Dokumentation: https://metacpan.org/pod/JSON
 ```
