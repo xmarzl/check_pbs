@@ -63,7 +63,7 @@ sub unixtime_to_time($) {
   'n|node=s' => \$proxmox_node,
   's|storage:s' => \$proxmox_storage,
   'w|warning:i' => \$backup_age_warning,
-  'c|critical' => \$backup_age_critical,
+  'c|critical:i' => \$backup_age_critical,
   'vm|vmid=s@' => \@proxmox_vmids,
   'v|verbose!' => \$verbose,
   'h|help!' => sub { &help() }
@@ -140,6 +140,9 @@ my $count_ok = 0;
 
 my $output = '';
 
+&verbose('Critical seconds: '.$backup_age_critical);
+&verbose('Warning seconds: '.$backup_age_warning);
+
 # -- check newest backup for each vm
 for my $vmid(keys %proxmox_vmid_backups) {
   &verbose('searching for the newest backup of vmid '.$vmid.'...');
@@ -167,6 +170,7 @@ for my $vmid(keys %proxmox_vmid_backups) {
     # ---- append ok-information to output
     $output = $output.'OK - '.$vmid.' - '.$backup_time."\n";
   }
+  &verbose('Age in seconds: '.$backup_age_in_seconds);
   &verbose('Newst backup for vmid "'.$vmid.'": '.$backup_time);
 }
 
