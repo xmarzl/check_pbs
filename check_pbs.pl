@@ -156,15 +156,18 @@ for my $vmid(keys %proxmox_vmid_backups) {
   # --- check if older than critical- or warning-seconds
   if($backup_age_in_seconds > $backup_age_critical) {
     $count_critical++;
+    # ---- append critical-information to output
+    $output = 'CRITICAL - '.$output.$vmid.' - '.$backup_time."\n";
   }elsif($backup_age_in_seconds > $backup_age_warning) {
     $count_warning++;
+    # ---- append warning-information to output
+    $output = 'WARNING - '.$output.$vmid.' - '.$backup_time."\n";
   }else{
     $count_ok++;
+    # ---- append ok-information to output
+    $output = 'OK - '.$output.$vmid.' - '.$backup_time."\n";
   }
   &verbose('Newst backup for vmid "'.$vmid.'": '.$backup_time);
-
-  # --- append information to output
-  $output = $output.$vmid.' - '.$backup_time."\n";
 }
 
 # -- error if a vm is not found
