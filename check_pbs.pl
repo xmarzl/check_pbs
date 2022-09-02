@@ -174,11 +174,11 @@ for my $vmid(keys %proxmox_vmid_backups) {
   &verbose('Newst backup for vmid "'.$vmid.'": '.$backup_time);
 }
 
-# -- error if a vm is not found
+# -- error if a backop of a vm is not found
 for my $vmid(@proxmox_vmids) {
   if(not grep (/^$vmid$/, keys %proxmox_vmid_backups) ) {
     $count_critical++;
-    $output = $output.'Vmid "'.$vmid.'" not found.'."\n";
+    $output = $output.'No backup found for vmid "'.$vmid.'".'."\n";
   }
 }
 
