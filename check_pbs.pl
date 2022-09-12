@@ -7,6 +7,7 @@ use JSON;
 
 # -- Global Vars
 my $verbose = 0;
+my $ignore_weekend = 0;
 
 my $proxmox_node = '';
 my $proxmox_storage = 'Proxmox-Backup-Server';
@@ -29,6 +30,7 @@ sub help() {
   print '-w  --warning'."\n";
   print '-c  --critical'."\n";
   print '-vm --vmid'."\n";
+  print '-iwd -- ignoreweekend'."\n";
   print '-v  --verbose'."\n";
   print '--help'."\n";
   print 'perl check_pbs.pl -n <node> -vm <vmid> [-s <storagename>] [-w <warning>] [-c <critical>] [-v]'."\n";
@@ -66,10 +68,12 @@ sub unixtime_to_time($) {
   'c|critical:i' => \$backup_age_critical,
   'vm|vmid=s@' => \@proxmox_vmids,
   'v|verbose!' => \$verbose,
+  'iwe|ignoreweekend!' => \$ignore_weekend,
   'h|help!' => sub { &help() }
 );
 
 # --- Verbose GetOptions
+&verbose('ignore_weekend: "'.$ignore_weekend.'"');
 &verbose('storage: "'.$proxmox_node.'"');
 &verbose('node: "'.$proxmox_storage.'"');
 &verbose('warning: "'.$backup_age_warning.'"');
@@ -186,15 +190,24 @@ for my $vmid(@proxmox_vmids) {
 print 'Critical: '.$count_critical.' - Warning: '.$count_warning.' - OK: '.$count_ok."\n";
 print $output;
 
+# -- exit ok if weekend mode enabled
+if($ignore_weekend == 1) {
+  print('Ignoring weekend...');
+  exit($error{'ok'});
+}
 
-# -- exit if error
-if($count_critical > 0) {
+# -- exit if critical
+elsif($count_critical > 0) {
   exit($error{'critical'});
 }
+
+# -- exit if warning
 elsif($count_warning > 0) {
   exit($error{'warning'});
 }
 
-# -- File is not too old = OK
-&verbose('End script - Everything fine!');
-exit($error{'ok'});
+# -- exit if ok = File is not too old
+else {
+  &verbose('End script - Everything fine!');
+  exit($error{'ok'});
+}
