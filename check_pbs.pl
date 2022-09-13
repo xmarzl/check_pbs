@@ -191,10 +191,10 @@ print 'Critical: '.$count_critical.' - Warning: '.$count_warning.' - OK: '.$coun
 print $output;
 
 # -- exit ok if weekend mode enabled
-if($ignore_weekend == 1) {
-  print('Ignoring weekend...');
-  exit($error{'ok'});
-}
+#if($ignore_weekend == 1) {
+#  print('Ignoring weekend...');
+#  exit($error{'ok'});
+#}
 
 # -- exit if critical
 elsif($count_critical > 0) {
