@@ -186,18 +186,32 @@ for my $vmid(@proxmox_vmids) {
   }
 }
 
-# --- icinga title & message
+# -- if weekend parameter is set
+my $is_weekend = 0;
+if($ignore_weekend == 1) {
+
+  # --- set icinga title to "ignoring weekend"
+  my $day_of_week = (localtime(time))[6];
+  &verbose('Day of week: '.$day_of_week);
+  
+  # --- ignoring weekend (sunday=0, saturday=6)
+  if($day_of_week == 0 || $day_of_week == 6) {
+    print('Ignoring weekend...'."\n");
+    $is_weekend = 1;
+  }
+}
+
+# -- print icinga title (if not weekend, else its also message) & message
 print 'Critical: '.$count_critical.' - Warning: '.$count_warning.' - OK: '.$count_ok."\n";
 print $output;
 
-# -- exit ok if weekend mode enabled
-#if($ignore_weekend == 1) {
-#  print('Ignoring weekend...');
-#  exit($error{'ok'});
-#}
+# -- exit when its weekend
+if($is_weekend == 1) {
+  exit($error{'ok'});
+}
 
 # -- exit if critical
-elsif($count_critical > 0) {
+if($count_critical > 0) {
   exit($error{'critical'});
 }
 
