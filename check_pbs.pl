@@ -30,7 +30,7 @@ sub help() {
   print '-w  --warning'."\n";
   print '-c  --critical'."\n";
   print '-vm --vmid'."\n";
-  print '-iwd -- ignoreweekend'."\n";
+  print '-iwd --ignoreweekend'."\n";
   print '-v  --verbose'."\n";
   print '--help'."\n";
   print 'perl check_pbs.pl -n <node> -vm <vmid> [-s <storagename>] [-w <warning>] [-c <critical>] [-v]'."\n";
@@ -68,7 +68,7 @@ sub unixtime_to_time($) {
   'c|critical:i' => \$backup_age_critical,
   'vm|vmid=s@' => \@proxmox_vmids,
   'v|verbose!' => \$verbose,
-  'iwe|ignoreweekend!' => \$ignore_weekend,
+  'iwe|ignore_weekend!' => \$ignore_weekend,
   'h|help!' => sub { &help() }
 );
 
