@@ -47,7 +47,7 @@ sub pvesh($) {
   my $f_command = '/usr/bin/sudo /usr/bin/pvesh get '.$f_path.' --output-format json';
   my $f_response = `$f_command`;
   &verbose('pvesh response: '.$f_response);
-  my $f_output = eval {decode_json($f_response);}
+  my $f_output = eval { decode_json($f_response); };
   if($@){
     print $@."\n";
     exit($error{'unknown'});
