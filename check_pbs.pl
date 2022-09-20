@@ -46,12 +46,12 @@ sub pvesh($) {
   my $f_path = shift;
   my $f_command = '/usr/bin/sudo /usr/bin/pvesh get '.$f_path.' --output-format json';
   my $f_response = `$f_command`;
-  &verbose('pvesh response: '.$f_response);
-  my $f_output = eval { decode_json($f_response); };
-  if($@){
-    print $@."\n";
-    exit($error{'unknown'});
+  if(length($f_response) <= 0) {
+    print "pvesh response is lower than 0\nbackups not reachable?\n";
+    exit($error{'critical'});
   }
+  &verbose('pvesh response: '.$f_response);
+  my $f_output = decode_json($f_response);
   return $f_output;
 }
 
@@ -161,8 +161,8 @@ my $output = '';
 # -- check newest backup for each vm
 for my $vmid(keys %proxmox_vmid_backups) {
   &verbose('searching for the newest backup of vmid '.$vmid.'...');
-  
-  # -- sort array (highest unixtime = newest file) 
+
+  # -- sort array (highest unixtime = newest file)
   my @vmid_last_backups = sort { $b->{ctime} <=> $a->{ctime} } @{$proxmox_vmid_backups{$vmid}};
 
   # --- element 0 = newest
@@ -204,7 +204,7 @@ if($ignore_weekend == 1) {
   # --- set icinga title to "ignoring weekend"
   my $day_of_week = (localtime(time))[6];
   &verbose('Day of week: '.$day_of_week);
-  
+
   # --- ignoring weekend (sunday=0, saturday=6)
   if($day_of_week == 0 || $day_of_week == 6) {
     print('Ignoring weekend...'."\n");
