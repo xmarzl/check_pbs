@@ -68,9 +68,16 @@ sub unixtime_to_time($) {
   'c|critical:i' => \$backup_age_critical,
   'vm|vmid=s@' => \@proxmox_vmids,
   'v|verbose!' => \$verbose,
-  'iwe|ignore_weekend!' => \$ignore_weekend,
+  'iwe|ignore_weekend:s' => \$ignore_weekend,
   'h|help!' => sub { &help() }
 );
+
+# -- translate icinga
+if($ignore_weekend == 'true' || $ignore_weekend == '1') {
+  $ignore_weekend = 1;
+}else{
+  $ignore_weekend = 0;
+}
 
 # --- Verbose GetOptions
 &verbose('ignore_weekend: "'.$ignore_weekend.'"');
